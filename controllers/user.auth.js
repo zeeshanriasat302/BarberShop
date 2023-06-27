@@ -12,7 +12,7 @@ class AuthController {
   //    User Register
   async register(req, res) {
     try {
-      const { name, email, password } = req.body;
+      const { full_name, email, password, phone_no, address, profile } = req.body;
       //find user by email
       const { data } = await SupaBaseService.getById(
         "user",
@@ -35,8 +35,11 @@ class AuthController {
       //register user
       await SupaBaseService.create("user", {
         email,
-        name,
+        full_name,
         password: hashedPassword,
+        phone_no,
+        address,
+        profile
       });
 
       return LoggerService.LoggerHandler(
@@ -58,12 +61,16 @@ class AuthController {
   async login(req, res) {
     try {
       let { email, password } = req.body;
-      const { data } = await SupaBaseService.getById(
-        "user",
-        "email",
-        email,
-        SupaBaseService.selectUserFields
-      );
+      // const { data } = await SupaBaseService.getById(
+      //   "user",
+      //   "email",
+      //   email,
+      //   SupaBaseService.selectUserFields
+      // );
+      const { data } = await supabase
+      .from("user")
+      .select()
+      .eq("email", req.body.email)
 
       if (!data) {
         return LoggerService.LoggerHandler(
@@ -74,8 +81,8 @@ class AuthController {
       }
 
       //Check Password
-      const isCorrect = AuthService.comparePassword(password, data.password);
-
+      const isCorrect = AuthService.comparePassword(password, data[0].password);
+console.log("isCorrect----> ",isCorrect)
       if (!isCorrect) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.EXISTS,
@@ -86,7 +93,7 @@ class AuthController {
 
       // generating auth token
       const token = AuthService.generateToken(data);
-
+      console.log("token ----> ", token)
       delete data.password;
 
       return LoggerService.LoggerHandler(

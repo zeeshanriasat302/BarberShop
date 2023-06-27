@@ -8,8 +8,10 @@ class AuthService {
     this.refreshTokens = [];
   }
   // generate token
+  // generate token
   generateToken = (user) => {
     // generate token
+    let expiry_token = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30;
 
     const accessToken = JWT.sign(
       {

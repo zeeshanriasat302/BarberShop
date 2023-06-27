@@ -2,8 +2,9 @@ const supabase = require("../config/db");
 
 class SupaBaseService {
   constructor() {
-    this.selectProductsFields = "id,name,category,created_at";
-    this.selectUserFields = "id,name,email,created_at";
+
+    this.selectappointmentFields = "id, customer_id, barber_id, dateTime, created_at";
+    this.selectUserFields = "id, full_name, email, password, phone_no, address, profile, created_at";
 
   }
   //create

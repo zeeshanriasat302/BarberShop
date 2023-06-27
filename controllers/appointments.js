@@ -1,35 +1,42 @@
 const STRINGS = require("../utils/texts");
+const supabase = require("../config/db");
 
 //services
 const LoggerService = require("../config/logger");
 const SupaBaseService = require("../services/supabase.service");
 
-class ProductsController {
-  //create
+class AppointmentsController {
+  //create appointment
   async create(req, res) {
     try {
-      const { name } = req.body;
-      //find user by email
+      const { dateTime, customer_id, barber_id } = req.body;
 
-      const { data } = await SupaBaseService.getById("products", "name", name);
+      const { data } = await supabase
+        .from("appointments")
+        .select()
+        .eq("dateTime", req.body.dateTime);
 
-      if (data) {
+      if (data.length > 0) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.EXISTS,
-          STRINGS.ERRORS.productAlreadyExist,
+          STRINGS.ERRORS.dateTimeAlreadyExist,
           res
         );
       }
-      //add product
-      await SupaBaseService.create("products", req.body);
+      //create
+      await SupaBaseService.create("appointments", {
+        dateTime,
+        customer_id,
+        barber_id,
+      });
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
-        STRINGS.TEXTS.productsCreated,
+        STRINGS.TEXTS.appointmentCreated,
         res
       );
     } catch (error) {
-      console.log("User Register Error-->", error.message);
+      console.log("appointments Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
         error.message,
@@ -37,23 +44,21 @@ class ProductsController {
       );
     }
   }
-  //get products
+
+  //get appointments
   async get(req, res) {
     try {
-      //get all products
-      const { data } = await SupaBaseService.getAll(
-        "products",
-        SupaBaseService.selectProductsFields
-      );
+      // get all appointments
+      const { data } = await SupaBaseService.getAll("appointments");
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
-        STRINGS.TEXTS.productsFetched,
+        STRINGS.TEXTS.appointmentsFetched,
         res,
         data
       );
     } catch (error) {
-      console.log("products Error-->", error.message);
+      console.log("appointments Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
         error.message,
@@ -61,33 +66,33 @@ class ProductsController {
       );
     }
   }
-  //get product by user id
+
+  //get appointments by user id
   async getByUserId(req, res) {
     try {
       const id = req.params.userId;
       const { data } = await SupaBaseService.getById(
-        "products",
-        "user_id",
-        id,
-        SupaBaseService.selectProductsFields
+        "appointments",
+        "customer_id",
+        id
       );
 
-      // .single();
       if (!data) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.NOT_FOUND,
-          STRINGS.ERRORS.productNotFound,
+          STRINGS.ERRORS.appointmentNotFound,
           res
         );
       }
+
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
-        STRINGS.TEXTS.productsFetched,
+        STRINGS.TEXTS.appointmentsFetched,
         res,
         data
       );
     } catch (error) {
-      console.log("User Register Error-->", error.message);
+      console.log("appointments Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
         error.message,
@@ -95,32 +100,29 @@ class ProductsController {
       );
     }
   }
-  //get product by id
+
+  //get appointment by id
   async getById(req, res) {
     try {
       const id = req.params.id;
-      const { data } = await SupaBaseService.getById(
-        "products",
-        "id",
-        id,
-        SupaBaseService.selectProductsFields
-      );
+      const { data } = await SupaBaseService.getById("appointments", "id", id);
 
       if (!data) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.NOT_FOUND,
-          STRINGS.ERRORS.productNotFound,
+          STRINGS.ERRORS.appointmentNotFound,
           res
         );
       }
+
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
-        STRINGS.TEXTS.productsFetched,
+        STRINGS.TEXTS.appointmentsFetched,
         res,
         data
       );
     } catch (error) {
-      console.log("User Register Error-->", error.message);
+      console.log("appointments Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
         error.message,
@@ -128,32 +130,35 @@ class ProductsController {
       );
     }
   }
-  //update product by id
+
+  //update appointments by id
   async updateById(req, res) {
     try {
       const id = req.params.id;
-      const { data } = await SupaBaseService.getById(
-        "products",
-        "id",
-        id,
-        SupaBaseService.selectProductsFields
-      );
+      const dateTime = req.body.dateTime;
+
+      const { data } = await SupaBaseService.getById("appointments", "id", id);
+
       if (!data) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.NOT_FOUND,
-          STRINGS.ERRORS.productNotFound,
+          STRINGS.ERRORS.appointmentNotFound,
           res
         );
       }
-      await SupaBaseService.update("products", req.body, id);
+
+      await supabase
+        .from("appointments")
+        .update({ dateTime: dateTime })
+        .eq("id", id);
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
-        STRINGS.TEXTS.productsUpdated,
+        STRINGS.TEXTS.appointmentUpdated,
         res
       );
     } catch (error) {
-      console.log("User Register Error-->", error.message);
+      console.log("appointments Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
         error.message,
@@ -161,33 +166,30 @@ class ProductsController {
       );
     }
   }
-  //delete product by id
+
+  //delete appointment by id
   async deleteById(req, res) {
     try {
       const id = req.params.id;
-      const { data } = await SupaBaseService.getById(
-        "products",
-        "id",
-        id,
-        SupaBaseService.selectProductsFields
-      );
+      const { data } = await SupaBaseService.getById("appointments", "id", id);
+
       if (!data) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.NOT_FOUND,
-          STRINGS.ERRORS.productNotFound,
+          STRINGS.ERRORS.appointmentNotFound,
           res
         );
       }
       //delete
-      await SupaBaseService.delete("products", id);
+      await SupaBaseService.delete("appointments", id);
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
-        STRINGS.TEXTS.productsDeleted,
+        STRINGS.TEXTS.appointmentDeleted,
         res
       );
     } catch (error) {
-      console.log("User Register Error-->", error.message);
+      console.log("appointments Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
         error.message,
@@ -197,4 +199,4 @@ class ProductsController {
   }
 }
 
-module.exports = new ProductsController();
+module.exports = new AppointmentsController();

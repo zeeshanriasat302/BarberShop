@@ -7,9 +7,11 @@ router.get("/", function (req, res, next) {
   res.json({ message: "welcome to supabase!" });
 });
 
+//appointment routes
+// router.use("/appointments",auth(),require('./appointments'))
+router.use("/appointments", require("./appointments"));
+
 //auth routes
-router.use("/products",auth(),require('./products'))
-//products routes
-router.use("/auth", require('./user.auth'))
+router.use("/auth", require("./user.auth"));
 
 module.exports = router;

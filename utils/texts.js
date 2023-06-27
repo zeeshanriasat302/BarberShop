@@ -6,8 +6,11 @@ module.exports = {
     accountExists: "Account exists with this email!",
     userNotExists: "User does not exist!",
     userAlreadyExists: "User already exists with this email!",
-    productNotFound: "Product not found!",
-    productAlreadyExist: "Product already exist!",
+
+    appointmentNotFound: "Appointment not found!",
+    appointmentAlreadyExist: "Appointment already exist!",
+
+    dateTimeAlreadyExist: "Date time already exist",
 
     tokenInvalid: "Unauthorized access: Token not found",
     userNotFound: "Unauthorized access: User does not exist",
@@ -31,10 +34,11 @@ module.exports = {
 
     profileData: "Profile Data",
     profileUpdated: "Profile Updated",
-    productsFetched:"Products fetched successfully!",
-    productsCreated:"Product created successfully!",
-    productsUpdated:"Product updated successfully!",
-    productsDeleted:"Product deleted successfully!"
+
+    appointmentCreated:"Appointment created successfully!",
+    appointmentsFetched:"Appointments fetched successfully!",
+    appointmentUpdated:"Appointments updated successfully!",
+    appointmentDeleted:"Appointments deleted successfully!",
 
 
 
