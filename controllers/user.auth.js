@@ -82,7 +82,6 @@ class AuthController {
 
       //Check Password
       const isCorrect = AuthService.comparePassword(password, data[0].password);
-console.log("isCorrect----> ",isCorrect)
       if (!isCorrect) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.EXISTS,
@@ -93,7 +92,6 @@ console.log("isCorrect----> ",isCorrect)
 
       // generating auth token
       const token = AuthService.generateToken(data);
-      console.log("token ----> ", token)
       delete data.password;
 
       return LoggerService.LoggerHandler(

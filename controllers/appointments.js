@@ -70,7 +70,7 @@ class AppointmentsController {
   //get appointments by user id
   async getByUserId(req, res) {
     try {
-      const id = req.params.userId;
+      const id = req.params.id;
       const { data } = await SupaBaseService.getById(
         "appointments",
         "customer_id",

@@ -1,15 +1,13 @@
-# express-supabase
-fake javascript framework to create a widget that handles some linked checkboxes.
+# Project
+BarberShop.
 
 > Technologies used
     - Node-js, Express-js
     - Supabase
-    - PUG
-    - CSS
 
 ## Installation process
 1. #### clone the repo using this command
-    git clone https://github.com/shehzadfalcon/express-supabase
+    git clone https://github.com/zeeshanriasat302/BarberShop.git
 
 2. #### navigate to the project directory
     cd express-supabase
