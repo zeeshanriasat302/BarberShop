@@ -10,7 +10,7 @@ BarberShop.
     git clone https://github.com/zeeshanriasat302/BarberShop.git
 
 2. #### navigate to the project directory
-    cd express-supabase
+    cd BarberShop
 
 3. #### install npm packages
     npm install
