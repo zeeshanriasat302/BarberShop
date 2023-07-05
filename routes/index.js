@@ -10,6 +10,7 @@ router.get("/", function (req, res, next) {
 //appointment routes
 // router.use("/appointments",auth(),require('./appointments'))
 router.use("/appointments", require("./appointments"));
+router.use("/shop", require("./shop"))
 
 //auth routes
 router.use("/auth", require("./user.auth"));
