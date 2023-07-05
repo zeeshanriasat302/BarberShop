@@ -16,6 +16,7 @@ class Shop {
         closing_hour,
         status,
         barber_id,
+        shop_name,
       } = req.body;
 
       let isExist = await supabase.from("user").select().eq("id", barber_id);
@@ -34,6 +35,7 @@ class Shop {
         opening_hour,
         closing_hour,
         barber_id,
+        shop_name,
       });
 
       return LoggerService.LoggerHandler(
