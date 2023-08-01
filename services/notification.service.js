@@ -5,9 +5,7 @@ const STRINGS = require("../utils/texts");
 class NotificationService {
   //**** new user registered notification sent to admin
   newAppointmentNotification = async (fcm_token, user_id, dateTime) => {
-    console.log("user_id-----> ", user_id)
     const {data, error} = await SupaBaseService.getById("user", "id", user_id)
-    console.log("userData ----> ", data)
     let title = STRINGS.TEXTS.appointmentCreatedTitle;
     let description =
       STRINGS.TEXTS.appointmentCreatedDescription + `${dateTime}`;
