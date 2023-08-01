@@ -27,9 +27,9 @@ function auth() {
 
       // let role = role;
       let id = String(decoded.id);
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("user")
-        .select("id,name,email,created_at")
+        .select("id,full_name,email,created_at")
         .eq("id", id)
         .single();
       if (!data)

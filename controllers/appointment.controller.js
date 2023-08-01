@@ -10,26 +10,27 @@ class AppointmentsController {
   //create appointment
   async create(req, res) {
     try {
-      const { dateTime, customer_id, barber_id } = req.body;
+      const { dateTime, customer_id, barber_id , shop_id} = req.body;
 
       const isAppointment = await supabase
         .from("appointment")
         .select()
         .eq("dateTime", dateTime);
 
-      // if (isAppointment.data.length > 0) {
-      //   return LoggerService.LoggerHandler(
-      //     STRINGS.STATUS_CODE.EXISTS,
-      //     STRINGS.ERRORS.dateTimeAlreadyExist,
-      //     res
-      //   );
-      // }
-      //create
-      // const { data, error } = await SupaBaseService.create("appointment", {
-      //   dateTime,
-      //   customer_id,
-      //   barber_id,
-      // });
+      if (isAppointment.data.length > 0) {
+        return LoggerService.LoggerHandler(
+          STRINGS.STATUS_CODE.EXISTS,
+          STRINGS.ERRORS.dateTimeAlreadyExist,
+          res
+        );
+      }
+      // create
+      const { data, error } = await SupaBaseService.create("appointment", {
+        dateTime,
+        customer_id,
+        barber_id,
+        shop_id
+      });
 
       const fcmToken = "234"
       NotificationService.newAppointmentNotification(fcmToken, barber_id, dateTime)

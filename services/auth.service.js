@@ -12,16 +12,15 @@ class AuthService {
   generateToken = (user) => {
     // generate token
     let expiry_token = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30;
-
     const accessToken = JWT.sign(
       {
-        id: user.id,
+        id: user[0].id,
       },
       ENV.JWT_SECRET
     );
 
     const refreshToken = JWT.sign(
-      { id: user.id },
+      { id: user[0].id },
       ENV.REFRESH_TOKEN_JWT_SECRET
     );
     this.refreshTokens.push(refreshToken);

@@ -20,7 +20,7 @@ class Shop {
       } = req.body;
 
       let isExist = await supabase.from("user").select().eq("id", barber_id);
-      if (isExist.data.length == 0) {
+      if (!isExist.data) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.EXISTS,
           STRINGS.ERRORS.userNotExists,
@@ -196,18 +196,23 @@ class Shop {
   async delete(req, res) {
     try {
       const id = req.params.id;
-      const { data } = await SupaBaseService.getById("shop", "id", id);
-
-      if (!data) {
+      const isShopExist = await SupaBaseService.getById("shop", "id", id);
+      if (!isShopExist) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.NOT_FOUND,
           STRINGS.ERRORS.shopNotFound,
           res
         );
       }
-      //delete
-      await SupaBaseService.delete("shop", id);
 
+      const reviews = await SupaBaseService.getAllById("review", "shop_id", id)
+      const appointments = await SupaBaseService.getAllById("appointment", "shop_id", id)
+
+      console.log("reviews ---> ", reviews)
+      //delete
+      const {data, error } =await SupaBaseService.delete("shop", id);
+
+      console.log(error)
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.SUCCESS,
         STRINGS.TEXTS.shopDeleted,

@@ -13,10 +13,10 @@ router.get("/", function (req, res, next) {
 //auth routes
 router.use("/auth", require("./user.auth"));
 // appointments routes
-router.use("/appointments", require("./appointment.route"));
+router.use("/appointments", auth(), require("./appointment.route"));
 //shop routes
-router.use("/shop", require("./shop.route"));
+router.use("/shop", auth(), require("./shop.route"));
 // review routes
-router.use("/review", require("./review.route"));
+router.use("/review", auth(), require("./review.route"));
 
 module.exports = router;
