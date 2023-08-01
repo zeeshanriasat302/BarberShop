@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const ShopController = require("../controllers/shop")
+const ShopController = require("../controllers/shop.controller")
 
 /* create shop  */
 router.post("/create", ShopController.create);

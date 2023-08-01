@@ -4,6 +4,7 @@ const supabase = require("../config/db");
 //services
 const LoggerService = require("../config/logger");
 const SupaBaseService = require("../services/supabase.service");
+const NotificationService = require("../services/notification.service")
 
 class AppointmentsController {
   //create appointment
@@ -11,24 +12,27 @@ class AppointmentsController {
     try {
       const { dateTime, customer_id, barber_id } = req.body;
 
-      const { data } = await supabase
-        .from("appointments")
+      const isAppointment = await supabase
+        .from("appointment")
         .select()
-        .eq("dateTime", req.body.dateTime);
+        .eq("dateTime", dateTime);
 
-      if (data.length > 0) {
-        return LoggerService.LoggerHandler(
-          STRINGS.STATUS_CODE.EXISTS,
-          STRINGS.ERRORS.dateTimeAlreadyExist,
-          res
-        );
-      }
+      // if (isAppointment.data.length > 0) {
+      //   return LoggerService.LoggerHandler(
+      //     STRINGS.STATUS_CODE.EXISTS,
+      //     STRINGS.ERRORS.dateTimeAlreadyExist,
+      //     res
+      //   );
+      // }
       //create
-      await SupaBaseService.create("appointments", {
-        dateTime,
-        customer_id,
-        barber_id,
-      });
+      // const { data, error } = await SupaBaseService.create("appointment", {
+      //   dateTime,
+      //   customer_id,
+      //   barber_id,
+      // });
+
+      const fcmToken = "234"
+      NotificationService.newAppointmentNotification(fcmToken, barber_id, dateTime)
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
@@ -36,10 +40,10 @@ class AppointmentsController {
         res
       );
     } catch (error) {
-      console.log("appointments Error-->", error.message);
+      console.log("appointment Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -49,7 +53,7 @@ class AppointmentsController {
   async get(req, res) {
     try {
       // get all appointments
-      const { data } = await SupaBaseService.getAll("appointments");
+      const { data } = await SupaBaseService.getAll("appointment");
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
@@ -58,10 +62,10 @@ class AppointmentsController {
         data
       );
     } catch (error) {
-      console.log("appointments Error-->", error.message);
+      console.log("appointment Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -71,8 +75,8 @@ class AppointmentsController {
   async getByUserId(req, res) {
     try {
       const id = req.params.id;
-      const { data } = await SupaBaseService.getById(
-        "appointments",
+      const { data, error } = await SupaBaseService.getAllById(
+        "appointment",
         "customer_id",
         id
       );
@@ -92,10 +96,10 @@ class AppointmentsController {
         data
       );
     } catch (error) {
-      console.log("appointments Error-->", error.message);
+      console.log("appointment Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -105,7 +109,7 @@ class AppointmentsController {
   async getById(req, res) {
     try {
       const id = req.params.id;
-      const { data } = await SupaBaseService.getById("appointments", "id", id);
+      const { data } = await SupaBaseService.getById("appointment", "id", id);
 
       if (!data) {
         return LoggerService.LoggerHandler(
@@ -122,10 +126,10 @@ class AppointmentsController {
         data
       );
     } catch (error) {
-      console.log("appointments Error-->", error.message);
+      console.log("appointment Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -137,7 +141,7 @@ class AppointmentsController {
       const id = req.params.id;
       const dateTime = req.body.dateTime;
 
-      const { data } = await SupaBaseService.getById("appointments", "id", id);
+      const { data } = await SupaBaseService.getById("appointment", "id", id);
 
       if (!data) {
         return LoggerService.LoggerHandler(
@@ -148,7 +152,7 @@ class AppointmentsController {
       }
 
       await supabase
-        .from("appointments")
+        .from("appointment")
         .update({ dateTime: dateTime })
         .eq("id", id);
 
@@ -158,10 +162,10 @@ class AppointmentsController {
         res
       );
     } catch (error) {
-      console.log("appointments Error-->", error.message);
+      console.log("appointment Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -171,7 +175,7 @@ class AppointmentsController {
   async deleteById(req, res) {
     try {
       const id = req.params.id;
-      const { data } = await SupaBaseService.getById("appointments", "id", id);
+      const { data } = await SupaBaseService.getById("appointment", "id", id);
 
       if (!data) {
         return LoggerService.LoggerHandler(
@@ -181,7 +185,7 @@ class AppointmentsController {
         );
       }
       //delete
-      await SupaBaseService.delete("appointments", id);
+      await SupaBaseService.delete("appointment", id);
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
@@ -189,10 +193,10 @@ class AppointmentsController {
         res
       );
     } catch (error) {
-      console.log("appointments Error-->", error.message);
+      console.log("appointment Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }

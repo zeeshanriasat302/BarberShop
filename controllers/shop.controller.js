@@ -27,8 +27,17 @@ class Shop {
           res
         );
       }
+
+      let isShopExist = await supabase.from("shop").select().eq("shop_name", shop_name)
+      if (isShopExist.data.length > 0) {
+        return LoggerService.LoggerHandler(
+          STRINGS.STATUS_CODE.EXISTS,
+          STRINGS.ERRORS.shopAlreadyExist,
+          res
+        );
+      }
       //create
-      await SupaBaseService.create("shop", {
+      const {data, error} = await SupaBaseService.create("shop", {
         status,
         address,
         description,
@@ -47,7 +56,7 @@ class Shop {
       console.log("shop Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -77,7 +86,7 @@ class Shop {
       console.log("shop Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -99,7 +108,7 @@ class Shop {
       console.log("shop Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -141,7 +150,7 @@ class Shop {
       console.log("shop Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -177,7 +186,7 @@ class Shop {
       console.log("shop Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -208,7 +217,7 @@ class Shop {
       console.log("shop Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }

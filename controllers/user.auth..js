@@ -12,7 +12,7 @@ class AuthController {
   //    User Register
   async register(req, res) {
     try {
-      const { full_name, email, password, phone_no, address, profile } = req.body;
+      const { full_name, email, password, phone_no, address, profile, role} = req.body;
       //find user by email
       const { data } = await SupaBaseService.getById(
         "user",
@@ -34,13 +34,15 @@ class AuthController {
 
       //register user
       await SupaBaseService.create("user", {
-        email,
         full_name,
+        email,
         password: hashedPassword,
         phone_no,
         address,
-        profile
+        profile,
+        role
       });
+
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
@@ -51,7 +53,7 @@ class AuthController {
       console.log("User Register Error-->", error.message);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -104,7 +106,7 @@ class AuthController {
       console.log("User Login Error-->", error);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
@@ -138,7 +140,34 @@ class AuthController {
       console.log("Invite Error -->", error);
       LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
-        error.message,
+        STRINGS.ERRORS.someThingWentWrong,
+        res
+      );
+    }
+  }
+
+  //Get all users
+  async getall(req, res) {
+    try {
+      const { data } = await supabase.from("user").select();
+      if (!data) {
+        return LoggerService.LoggerHandler(
+          STRINGS.STATUS_CODE.NOT_FOUND,
+          STRINGS.ERRORS.userNotExists,
+          res
+        );
+      }
+      return LoggerService.LoggerHandler(
+        STRINGS.STATUS_CODE.SUCCESS,
+        STRINGS.TEXTS.profileData,
+        res,
+        data
+      );
+    } catch (error) {
+      console.log("Invite Error -->", error);
+      LoggerService.LoggerHandler(
+        STRINGS.STATUS_CODE.INTERNAL_SERVER_ERROR,
+        STRINGS.ERRORS.someThingWentWrong,
         res
       );
     }
