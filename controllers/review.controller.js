@@ -10,7 +10,7 @@ class Review {
     try {
       const { shop_id, customer_id, rating, comment } = req.body;
       let isExist = await supabase.from("user").select().eq("id", customer_id);
-      console.log("isExist", isExist);
+
       if (!isExist.data) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.EXISTS,
@@ -20,7 +20,6 @@ class Review {
       }
 
       let isShopExist = await supabase.from("shop").select().eq("id", shop_id);
-      console.log("isShopExist ", isShopExist);
       if (!isShopExist.data) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.EXISTS,
@@ -35,8 +34,6 @@ class Review {
         rating,
         comment,
       });
-
-      console.log("error ---> ", error);
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
@@ -148,7 +145,7 @@ class Review {
         );
       }
       //delete
-      await SupaBaseService.delete("review", id);
+      await SupaBaseService.delete("review", "id", id);
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.SUCCESS,

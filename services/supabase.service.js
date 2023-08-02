@@ -22,15 +22,15 @@ class SupaBaseService {
 
   //get by id
   async getAllById(table, keyId, id) {
-    return supabase.from(table).select().eq(keyId, id)
+    return supabase.from(table).select().eq(keyId, id);
   }
   //update
   async update(table, data, id) {
     return supabase.from(table).update(data).eq("id", id);
   }
   //delete
-  async delete(table, id) {
-    return supabase.from(table).delete().eq("id", id);
+  async delete(table, keyId, id) {
+    return supabase.from(table).delete().eq(keyId, id);
   }
 }
 

@@ -4,13 +4,13 @@ const supabase = require("../config/db");
 //services
 const LoggerService = require("../config/logger");
 const SupaBaseService = require("../services/supabase.service");
-const NotificationService = require("../services/notification.service")
+const NotificationService = require("../services/notification.service");
 
 class AppointmentsController {
   //create appointment
   async create(req, res) {
     try {
-      const { dateTime, customer_id, barber_id , shop_id} = req.body;
+      const { dateTime, customer_id, barber_id, shop_id } = req.body;
 
       const isAppointment = await supabase
         .from("appointment")
@@ -29,11 +29,15 @@ class AppointmentsController {
         dateTime,
         customer_id,
         barber_id,
-        shop_id
+        shop_id,
       });
 
-      const fcmToken = "234"
-      NotificationService.newAppointmentNotification(fcmToken, barber_id, dateTime)
+      const fcmToken = "234";
+      NotificationService.newAppointmentNotification(
+        fcmToken,
+        barber_id,
+        dateTime
+      );
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
@@ -186,7 +190,7 @@ class AppointmentsController {
         );
       }
       //delete
-      await SupaBaseService.delete("appointment", id);
+      await SupaBaseService.delete("appointment", "id", id);
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,

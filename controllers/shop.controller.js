@@ -28,7 +28,10 @@ class Shop {
         );
       }
 
-      let isShopExist = await supabase.from("shop").select().eq("shop_name", shop_name)
+      let isShopExist = await supabase
+        .from("shop")
+        .select()
+        .eq("shop_name", shop_name);
       if (isShopExist.data.length > 0) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.EXISTS,
@@ -37,7 +40,7 @@ class Shop {
         );
       }
       //create
-      const {data, error} = await SupaBaseService.create("shop", {
+      const { data, error } = await SupaBaseService.create("shop", {
         status,
         address,
         description,
@@ -161,7 +164,6 @@ class Shop {
     try {
       const id = req.params.id;
       const { status } = req.body;
-      console.log(status)
       const { data } = await SupaBaseService.getById("shop", "id", id);
 
       if (!data) {
@@ -172,10 +174,7 @@ class Shop {
         );
       }
 
-      await supabase
-        .from("shop")
-        .update({ status })
-        .eq("id", id);
+      await supabase.from("shop").update({ status }).eq("id", id);
 
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.CREATED,
@@ -197,22 +196,22 @@ class Shop {
     try {
       const id = req.params.id;
       const isShopExist = await SupaBaseService.getById("shop", "id", id);
-      if (!isShopExist) {
+      if (!isShopExist.data) {
         return LoggerService.LoggerHandler(
           STRINGS.STATUS_CODE.NOT_FOUND,
           STRINGS.ERRORS.shopNotFound,
           res
         );
       }
+      const reviews = await SupaBaseService.getAllById("review", "shop_id", id);
 
-      const reviews = await SupaBaseService.getAllById("review", "shop_id", id)
-      const appointments = await SupaBaseService.getAllById("appointment", "shop_id", id)
+      // delete shop reviews
+      await SupaBaseService.delete("review", "shop_id", id);
 
-      console.log("reviews ---> ", reviews)
-      //delete
-      const {data, error } =await SupaBaseService.delete("shop", id);
+      // delete shop 
+      await SupaBaseService.delete("shop", "id", id);
 
-      console.log(error)
+
       return LoggerService.LoggerHandler(
         STRINGS.STATUS_CODE.SUCCESS,
         STRINGS.TEXTS.shopDeleted,
